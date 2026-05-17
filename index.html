@@ -37,6 +37,7 @@
     color: var(--ink);
     font-size: 11pt;
     line-height: 1.65;
+    overflow-x: hidden;
   }
 
   /* COVER PAGE */
@@ -439,12 +440,19 @@
     margin-bottom: 6px;
   }
 
-  /* TABLES */
+  /* TABLES - RESPONSIVE WRAPPER */
+  .table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 20px 0;
+  }
+
   table {
     width: 100%;
     border-collapse: collapse;
-    margin: 20px 0;
     font-size: 10pt;
+    min-width: 600px; /* Forces scroll on small screens */
   }
 
   thead tr {
@@ -460,6 +468,7 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     font-weight: 600;
+    white-space: nowrap;
   }
 
   tbody tr:nth-child(even) { background: var(--bg-warm); }
@@ -488,7 +497,7 @@
   .badge-green  { background: var(--win-bg); color: var(--accent-green); }
   .badge-blue   { background: var(--issue-bg); color: var(--accent-blue); }
 
-  /* TREND CHART (CSS bar chart) */
+  /* TREND CHART */
   .trend-chart {
     margin: 24px 0;
   }
@@ -601,18 +610,6 @@
     letter-spacing: 0.1em;
   }
 
-  /* PAGE BREAKS for PDF */
-  @media print {
-    .cover, .toc-page { page-break-after: always; }
-    .section-break { page-break-before: always; }
-    .part-header { page-break-after: avoid; }
-    h2.section-title { page-break-after: avoid; }
-    .issue-box, .powerful-box { page-break-inside: avoid; }
-  }
-
-  .spacer { height: 32px; }
-  .divider { border: none; border-top: 1px solid var(--border-light); margin: 32px 0; }
-
   .two-col {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -620,19 +617,67 @@
     margin: 16px 0;
   }
 
-  .inline-metric {
-    font-family: 'Playfair Display', serif;
-    font-size: 20pt;
-    font-weight: 900;
-    color: var(--accent);
+  /* ========================================================================= */
+  /* MOBILE RESPONSIVE CSS FIXES                                               */
+  /* ========================================================================= */
+  @media (max-width: 768px) {
+    body { font-size: 10pt; }
+    
+    .cover { padding: 40px 20px; text-align: center; align-items: center; }
+    .cover::before, .cover::after { opacity: 0.2; } /* تخفيف تأثير الخلفية الدائرية */
+    .cover h1 { font-size: 34pt; margin-top: 20px;}
+    .cover-subtitle { font-size: 11pt; }
+    .cover-meta { flex-direction: column; gap: 16px; align-items: center; padding-top: 24px; text-align: center;}
+    
+    .doc, .toc-page { padding: 30px 16px; }
+    .part-header { padding: 40px 20px; text-align: center; }
+    .part-header h2 { font-size: 22pt; }
+    
+    /* تحويل الأعمدة إلى عمودين أو عمود واحد حسب المساحة */
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .scores-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .two-col { grid-template-columns: 1fr; }
+    
+    h2.section-title { font-size: 16pt; margin: 32px 0 6px 0; }
+    h3.sub-title { font-size: 12pt; }
+    
+    .metric-card .metric-val { font-size: 20pt; }
+    .score-ring { font-size: 26pt; }
+    
+    .powerful-box, .issue-box { padding: 16px; }
+    .powerful-box h4, .issue-box h4 { font-size: 12pt; line-height: 1.4; }
+    
+    /* تظبيط شكل الرسم البياني */
+    .trend-row { font-size: 8pt; gap: 8px; }
+    .trend-label { width: 50px; text-align: left; }
+    .trend-val { width: 45px; }
+
+    /* القوائم الجانبية */
+    .toc-list li { flex-direction: column; gap: 6px; align-items: flex-start; }
+    .toc-list li.toc-sub a { padding-left: 10px; }
+  }
+
+  @media (max-width: 480px) {
+    /* للهواتف الصغيرة جداً */
+    .metrics-grid { grid-template-columns: 1fr; }
+    .scores-grid { grid-template-columns: 1fr; }
+    .cover h1 { font-size: 28pt; }
+  }
+
+  /* PAGE BREAKS for PDF */
+  @media print {
+    .cover, .toc-page { page-break-after: always; }
+    .section-break { page-break-before: always; }
+    .part-header { page-break-after: avoid; }
+    h2.section-title { page-break-after: avoid; }
+    .issue-box, .powerful-box { page-break-inside: avoid; }
+    .table-responsive { overflow-x: visible; }
+    table { min-width: auto; }
   }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════ -->
-<!-- COVER PAGE                                             -->
-<!-- ═══════════════════════════════════════════════════════ -->
 <div class="cover">
   <div class="cover-tag">Comprehensive Digital Performance Report</div>
   <h1>Animaat<span>.</span>com<br>SEO &amp; Technical<br>Analysis</h1>
@@ -657,9 +702,6 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ -->
-<!-- EXECUTIVE SUMMARY                                      -->
-<!-- ═══════════════════════════════════════════════════════ -->
 <div class="toc-page">
   <div class="toc-title">Executive Summary</div>
   <h2 style="font-family:'Playfair Display',serif;font-size:20pt;margin-bottom:18px;color:var(--ink);">At a Glance</h2>
@@ -712,7 +754,8 @@
 
   <p style="margin-top:20px;"><strong>Key Finding:</strong> Animaat.com has achieved genuine global search visibility across 80+ countries and built a strong brand-query presence — a remarkable foundation for a young, growing platform. The core challenge is converting strong <em>impression volume</em> into <em>clicks and engagement</em>, and resolving a critical mobile redirect issue that is masking true performance.</p>
 
-  <hr class="divider">
+  <hr class="divider" style="border: none; border-top: 1px solid var(--border-light); margin: 32px 0;">
+  
   <div class="toc-title">Contents</div>
   <ul class="toc-list">
     <li><a href="#part1">Part 1: Performance, Achievements &amp; Powerful Points</a></li>
@@ -735,11 +778,8 @@
   </ul>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ -->
-<!-- PART 1 HEADER                                          -->
-<!-- ═══════════════════════════════════════════════════════ -->
 <div class="section-break">
-  <div class="part-header">
+  <div class="part-header" id="part1">
     <div class="part-num">Part One</div>
     <h2>Performance, Achievements<br>&amp; Powerful Points Analysis</h2>
     <p>A comprehensive review of Animaat's growth trajectory, SEO wins, competitive strengths, and technical health — backed by 16 months of real data.</p>
@@ -747,10 +787,6 @@
 </div>
 
 <div class="doc">
-
-  <!-- ─────────────────────────────────────────── -->
-  <!-- S1: Market Impressions Share                -->
-  <!-- ─────────────────────────────────────────── -->
   <a name="s1"></a>
   <h2 class="section-title">1.1 — Market Impressions Share &amp; Visibility Growth</h2>
 
@@ -763,7 +799,6 @@
       <span>■ <span style="color:var(--accent-blue);">Impressions</span></span>
       <span>■ <span style="color:var(--accent);">Clicks ×10</span></span>
     </div>
-    <!-- Impressions bars scaled to max 1712 -->
     <div class="trend-row"><span class="trend-label">Jan '25</span><div class="trend-bar-wrap"><div class="trend-bar impressions" style="width:1.3%"></div></div><span class="trend-val">23</span></div>
     <div class="trend-row"><span class="trend-label">Feb '25</span><div class="trend-bar-wrap"><div class="trend-bar impressions" style="width:2.4%"></div></div><span class="trend-val">41</span></div>
     <div class="trend-row"><span class="trend-label">Mar '25</span><div class="trend-bar-wrap"><div class="trend-bar impressions" style="width:2.6%"></div></div><span class="trend-val">44</span></div>
@@ -792,361 +827,191 @@
 
   <p>Animaat's content is surfacing in search results across <strong>more than 80 countries</strong>. The platform registers impressions from markets as diverse as Egypt, the United States, France, Romania, the UK, the Netherlands, India, Brazil, and Japan. This global footprint — emerging organically without paid search — is a defining competitive advantage for an animal-centric social platform.</p>
 
-  <table>
-    <thead>
-      <tr><th>Country</th><th>Clicks</th><th>Impressions</th><th>CTR</th><th>Avg. Position</th><th>Signal</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Egypt</td><td>59</td><td>325</td><td><strong style="color:var(--accent-green);">18.15%</strong></td><td>4.11</td><td><span class="badge badge-green">Top Market</span></td></tr>
-      <tr><td>United States</td><td>14</td><td>3,487</td><td>0.40%</td><td>15.19</td><td><span class="badge badge-blue">High Potential</span></td></tr>
-      <tr><td>France</td><td>9</td><td>132</td><td><strong style="color:var(--accent-green);">6.82%</strong></td><td>8.61</td><td><span class="badge badge-green">Strong CTR</span></td></tr>
-      <tr><td>Romania</td><td>8</td><td>40</td><td><strong style="color:var(--accent-green);">20%</strong></td><td>5.10</td><td><span class="badge badge-green">Best CTR</span></td></tr>
-      <tr><td>Netherlands</td><td>5</td><td>92</td><td>5.43%</td><td>5.43</td><td><span class="badge badge-green">Strong</span></td></tr>
-      <tr><td>UAE</td><td>4</td><td>33</td><td>12.12%</td><td>7.61</td><td><span class="badge badge-green">Strong</span></td></tr>
-      <tr><td>United Kingdom</td><td>5</td><td>752</td><td>0.66%</td><td>19.95</td><td><span class="badge badge-orange">Needs Work</span></td></tr>
-      <tr><td>Germany</td><td>0</td><td>121</td><td>0%</td><td>8.88</td><td><span class="badge badge-orange">CTR Gap</span></td></tr>
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr><th>Country</th><th>Clicks</th><th>Impressions</th><th>CTR</th><th>Avg. Position</th><th>Signal</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Egypt</td><td>59</td><td>325</td><td><strong style="color:var(--accent-green);">18.15%</strong></td><td>4.11</td><td><span class="badge badge-green">Top Market</span></td></tr>
+        <tr><td>United States</td><td>14</td><td>3,487</td><td>0.40%</td><td>15.19</td><td><span class="badge badge-blue">High Potential</span></td></tr>
+        <tr><td>France</td><td>9</td><td>132</td><td><strong style="color:var(--accent-green);">6.82%</strong></td><td>8.61</td><td><span class="badge badge-green">Strong CTR</span></td></tr>
+        <tr><td>Romania</td><td>8</td><td>40</td><td><strong style="color:var(--accent-green);">20%</strong></td><td>5.10</td><td><span class="badge badge-green">Best CTR</span></td></tr>
+        <tr><td>Netherlands</td><td>5</td><td>92</td><td>5.43%</td><td>5.43</td><td><span class="badge badge-green">Strong</span></td></tr>
+        <tr><td>UAE</td><td>4</td><td>33</td><td>12.12%</td><td>7.61</td><td><span class="badge badge-green">Strong</span></td></tr>
+        <tr><td>United Kingdom</td><td>5</td><td>752</td><td>0.66%</td><td>19.95</td><td><span class="badge badge-orange">Needs Work</span></td></tr>
+        <tr><td>Germany</td><td>0</td><td>121</td><td>0%</td><td>8.88</td><td><span class="badge badge-orange">CTR Gap</span></td></tr>
+      </tbody>
+    </table>
+  </div>
 
   <div class="callout">
     <strong>Key Insight:</strong> The US generates the highest impressions (3,487) but only 14 clicks (0.40% CTR), indicating Animaat ranks for US queries but appears too deep in results. Egypt, by contrast, shows an <strong>18.15% CTR at position 4.11</strong> — confirming the homepage is highly compelling when users can actually find it.
   </div>
 
-  <!-- ─────────────────────────────────────────── -->
-  <!-- S2: SEO Achievements                        -->
-  <!-- ─────────────────────────────────────────── -->
   <a name="s2"></a>
   <h2 class="section-title">1.2 — SEO Achievements &amp; Milestones</h2>
 
   <h3 class="sub-title">Sitemap Infrastructure — 100% Success Rate</h3>
-
   <div class="win-box">
     <strong>✓ Major Win</strong>
-    <p style="margin-top:6px;margin-bottom:0;">All 6 submitted sitemaps — including the sitemap index (780 discovered pages), FAQ sitemap (18 pages), page sitemap (23 pages), and 3 plugin sitemaps — report a <strong>Status: Success</strong> in Google Search Console. Google is reading and processing Animaat's full URL inventory without errors. This is a foundational SEO prerequisite that many sites fail to achieve cleanly.</p>
+    <p style="margin-top:6px;margin-bottom:0;">All 6 submitted sitemaps — including the sitemap index (780 discovered pages), FAQ sitemap (18 pages), page sitemap (23 pages), and 3 plugin sitemaps — report a <strong>Status: Success</strong> in Google Search Console. Google is reading and processing Animaat's full URL inventory without errors.</p>
   </div>
 
   <h3 class="sub-title">Desktop SEO Score — Perfect 100/100</h3>
-
   <div class="win-box">
     <strong>✓ Exceptional Achievement</strong>
-    <p style="margin-top:6px;margin-bottom:0;">Both Lighthouse (run directly) and PageSpeed Insights (Google's production tool) award Animaat's desktop version a <strong>perfect SEO score of 100/100</strong>. This means every technical SEO requirement — meta tags, crawlability, robots directives, link structure, and structured data — is correctly implemented for desktop. This places Animaat in the top tier of technically-sound websites.</p>
+    <p style="margin-top:6px;margin-bottom:0;">Both Lighthouse and PageSpeed Insights award Animaat's desktop version a <strong>perfect SEO score of 100/100</strong>. This places Animaat in the top tier of technically-sound websites.</p>
   </div>
 
   <h3 class="sub-title">Top Performing Pages by Traffic</h3>
-
-  <table>
-    <thead>
-      <tr><th>Page</th><th>Clicks</th><th>Impressions</th><th>CTR</th><th>Position</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Homepage (/)</td><td><strong>89</strong></td><td>1,481</td><td>6.01%</td><td>9.89</td></tr>
-      <tr><td>/tag/dog-confidence-training/</td><td>5</td><td>61</td><td><strong style="color:green">8.20%</strong></td><td>4.89</td></tr>
-      <tr><td>/sanctuary-space-anxious-rescue-dogs/</td><td>4</td><td>62</td><td><strong style="color:green">6.45%</strong></td><td>7.23</td></tr>
-      <tr><td>/rodent-travel-safe-transport/</td><td>4</td><td>306</td><td>1.31%</td><td>8.17</td></tr>
-      <tr><td>/training-your-rabbit-positive-reinforcement/</td><td>4</td><td>363</td><td>1.10%</td><td>9.16</td></tr>
-      <tr><td>/rescue-dog-nutrition-guide/</td><td>4</td><td>1,370</td><td>0.29%</td><td>16.44</td></tr>
-      <tr><td>/FAQ's/who-is-animaat-for/</td><td>3</td><td>37</td><td><strong style="color:green">8.11%</strong></td><td>5.46</td></tr>
-      <tr><td>/faqs/</td><td>2</td><td>442</td><td>0.45%</td><td>2.26</td></tr>
-      <tr><td>/prices-and-packages/</td><td>2</td><td>64</td><td>3.12%</td><td>3.11</td></tr>
-      <tr><td>/rescue-cat-indoor-transition-guide/</td><td>1</td><td>500</td><td>0.20%</td><td>9.91</td></tr>
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr><th>Page</th><th>Clicks</th><th>Impressions</th><th>CTR</th><th>Position</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Homepage (/)</td><td><strong>89</strong></td><td>1,481</td><td>6.01%</td><td>9.89</td></tr>
+        <tr><td>/tag/dog-confidence-training/</td><td>5</td><td>61</td><td><strong style="color:green">8.20%</strong></td><td>4.89</td></tr>
+        <tr><td>/sanctuary-space-anxious-rescue-dogs/</td><td>4</td><td>62</td><td><strong style="color:green">6.45%</strong></td><td>7.23</td></tr>
+        <tr><td>/rodent-travel-safe-transport/</td><td>4</td><td>306</td><td>1.31%</td><td>8.17</td></tr>
+        <tr><td>/training-your-rabbit-positive-reinforcement/</td><td>4</td><td>363</td><td>1.10%</td><td>9.16</td></tr>
+        <tr><td>/rescue-dog-nutrition-guide/</td><td>4</td><td>1,370</td><td>0.29%</td><td>16.44</td></tr>
+        <tr><td>/FAQ's/who-is-animaat-for/</td><td>3</td><td>37</td><td><strong style="color:green">8.11%</strong></td><td>5.46</td></tr>
+        <tr><td>/faqs/</td><td>2</td><td>442</td><td>0.45%</td><td>2.26</td></tr>
+        <tr><td>/prices-and-packages/</td><td>2</td><td>64</td><td>3.12%</td><td>3.11</td></tr>
+        <tr><td>/rescue-cat-indoor-transition-guide/</td><td>1</td><td>500</td><td>0.20%</td><td>9.91</td></tr>
+      </tbody>
+    </table>
+  </div>
 
   <h3 class="sub-title">Brand Query Dominance</h3>
-
   <div class="win-box">
     <strong>✓ Brand Recognition Win</strong>
-    <p style="margin-top:6px;margin-bottom:0;">The query "animaat" alone generates <strong>91 clicks from 456 impressions at 19.96% CTR and position 2.13</strong>. This demonstrates that users who know the brand find it immediately. Strong brand CTR is a direct Google ranking signal for navigational queries.</p>
+    <p style="margin-top:6px;margin-bottom:0;">The query "animaat" alone generates <strong>91 clicks from 456 impressions at 19.96% CTR and position 2.13</strong>. This demonstrates that users who know the brand find it immediately.</p>
   </div>
 
   <h3 class="sub-title">Device Performance Split</h3>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr><th>Device</th><th>Clicks</th><th>Impressions</th><th>CTR</th><th>Avg. Position</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Mobile</td><td>69</td><td>2,569</td><td><strong style="color:var(--accent-green)">2.69%</strong></td><td>10.17</td></tr>
+        <tr><td>Desktop</td><td>67</td><td>5,196</td><td>1.29%</td><td>14.90</td></tr>
+        <tr><td>Tablet</td><td>3</td><td>315</td><td>0.95%</td><td>11.78</td></tr>
+      </tbody>
+    </table>
+  </div>
 
-  <table>
-    <thead>
-      <tr><th>Device</th><th>Clicks</th><th>Impressions</th><th>CTR</th><th>Avg. Position</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Mobile</td><td>69</td><td>2,569</td><td><strong style="color:var(--accent-green)">2.69%</strong></td><td>10.17</td></tr>
-      <tr><td>Desktop</td><td>67</td><td>5,196</td><td>1.29%</td><td>14.90</td></tr>
-      <tr><td>Tablet</td><td>3</td><td>315</td><td>0.95%</td><td>11.78</td></tr>
-    </tbody>
-  </table>
-
-  <!-- ─────────────────────────────────────────── -->
-  <!-- S3: POWERFUL POINTS                         -->
-  <!-- ─────────────────────────────────────────── -->
   <a name="s3"></a>
-  <h2 class="section-title" style="border-color:var(--accent);">★ 1.3 — Powerful Points: Core Strengths &amp; Competitive Advantages</h2>
-
-  <p>The following section highlights Animaat's most significant competitive assets — the genuine strengths that distinguish the platform and provide the foundation for accelerated growth.</p>
+  <h2 class="section-title" style="border-color:var(--accent);">★ 1.3 — Powerful Points</h2>
 
   <div class="powerful-box">
     <div class="pp-label">Powerful Point #2 — Global Multi-Market Search Presence</div>
     <h4>Organic Visibility Across 80+ Countries Without Paid Ads</h4>
-    <p>Animaat appears in search results across more than 80 countries — from Egypt to Singapore, from the US to Romania. This is a <em>rare and highly valuable asset</em> for a young platform. It signals that Google's algorithms have independently validated Animaat's content relevance at a global scale. Platforms with this footprint are positioned to capture international animal-owner communities organically.</p>
+    <p>Animaat appears in search results across more than 80 countries. This signals that Google's algorithms have independently validated Animaat's content relevance at a global scale.</p>
   </div>
 
   <div class="powerful-box">
     <div class="pp-label">Powerful Point #3 — Perfect Desktop SEO Score (100/100)</div>
     <h4>Technical SEO Fully Mastered for Desktop</h4>
-    <p>Achieving a perfect 100/100 SEO score on both Lighthouse and PageSpeed Insights simultaneously is exceptional. This means Animaat's desktop experience passes every crawlability, indexing, and metadata standard that Google assesses. <strong>This eliminates an entire class of SEO problems</strong> that plague most websites and gives content a clean pathway to rank.</p>
+    <p>Achieving a perfect 100/100 SEO score eliminates an entire class of SEO problems that plague most websites and gives content a clean pathway to rank.</p>
   </div>
 
   <div class="powerful-box">
-    <div class="pp-label">Powerful Point #4 — Near-Perfect Accessibility (99/100 Mobile, 91/100 Desktop)</div>
-    <h4>Exceptional Accessibility Is a Ranking Signal and a User Trust Signal</h4>
-    <p>Google uses accessibility as part of its quality assessment. A score of 99/100 on mobile accessibility means Animaat's interface is correctly structured for screen readers, ARIA labels are properly implemented, and semantic HTML is well-formed. This is both an SEO asset and a compliance strength that builds trust with diverse user communities including users with disabilities.</p>
+    <div class="pp-label">Powerful Point #4 — Near-Perfect Accessibility</div>
+    <h4>Exceptional Accessibility Is a Ranking & Trust Signal</h4>
+    <p>A score of 99/100 on mobile accessibility means Animaat's interface is correctly structured for screen readers, building trust with diverse user communities.</p>
   </div>
 
   <div class="powerful-box">
     <div class="pp-label">Powerful Point #5 — Instagram as Top Organic Referrer</div>
-    <h4>Social Media Driving 63 Referral Sessions — Brand Awareness Is Real</h4>
-    <p>According to Clarity data, Instagram.com is the #1 referral source with 63 sessions, followed by animaat.com (self-referral, 72 sessions) and google.com (27 sessions). Instagram's 63 referrals confirms that Animaat's social media presence is converting followers into website visitors — a validated social-to-web funnel that can be systematically scaled.</p>
+    <h4>Social Media Driving 63 Referral Sessions</h4>
+    <p>Instagram's 63 referrals confirms that Animaat's social media presence is converting followers into website visitors.</p>
   </div>
 
   <div class="powerful-box">
-    <div class="pp-label">Powerful Point #6 — Zero Rage Clicks, Zero Excessive Scrolling</div>
+    <div class="pp-label">Powerful Point #6 — Zero Rage Clicks</div>
     <h4>Users Are Not Frustrated — UX Quality Is High</h4>
-    <p>Microsoft Clarity reports <strong>0% rage clicks and 0% excessive scrolling</strong>. These two metrics are direct indicators of UX frustration. Their absence across 871 sessions means users are not encountering broken interactions, confusing layouts, or content that fails to load. This is a strong quality signal that the Animaat interface is functionally sound.</p>
+    <p>Microsoft Clarity reports <strong>0% rage clicks and 0% excessive scrolling</strong>, a strong quality signal that the Animaat interface is functionally sound.</p>
   </div>
 
   <div class="powerful-box">
-    <div class="pp-label">Powerful Point #7 — High-Intent Niche Keyword Indexing</div>
-    <h4>Animal Care Expertise Queries Are Being Discovered by Google</h4>
-    <p>The GSC queries table reveals that Animaat is being associated with high-intent, long-tail animal care queries such as <em>"best rabbit habitat settings for optimal comfort"</em> (127 impressions), <em>"domestic bird care"</em> (110 impressions), <em>"how to feed an emaciated dog"</em> (76 impressions), and <em>"cat rescue aftercare information"</em> (25 impressions). These queries represent users with urgent, specific information needs — exactly the audience an animal social platform should serve. Google is already mapping Animaat to this intent category.</p>
+    <div class="pp-label">Powerful Point #7 — High-Intent Niche Indexing</div>
+    <h4>Animal Care Expertise Queries Discovered</h4>
+    <p>Animaat is being associated with high-intent, long-tail queries like <em>"best rabbit habitat settings"</em> and <em>"how to feed an emaciated dog."</em></p>
   </div>
 
-  <div class="powerful-box">
-    <div class="pp-label">Powerful Point #8 — 780 Pages Indexed via Sitemap</div>
-    <h4>Content Depth Provides a Massive Surface Area for Ranking</h4>
-    <p>The sitemap index alone reveals 780 discovered pages — indicating Animaat has already built a substantial content library. With all sitemaps reporting Success status, this entire content corpus is accessible to Google's crawlers. A large, well-structured content library is one of the most durable SEO assets a website can possess, providing exponentially more ranking opportunities than a small site.</p>
-  </div>
-
-  <div class="powerful-box">
-    <div class="pp-label">Powerful Point #9 — Strong Egypt Market CTR (18.15%)</div>
-    <h4>Dominant Domestic Market Performance</h4>
-    <p>In Egypt — Animaat's home market — the platform achieves an <strong>18.15% CTR at an average position of 4.11</strong>. This indicates that Egyptian users searching for content in Animaat's niche are clicking through at nearly 10x the platform's global average CTR. This demonstrates that when Animaat achieves good positions, the brand and content strongly resonate with users. The formula works — it needs to be replicated internationally.</p>
-  </div>
-
-  <div class="powerful-box">
-    <div class="pp-label">Powerful Point #10 — Desktop CLS = 0 (Perfect Layout Stability)</div>
-    <h4>No Layout Shift Means a Professional, Stable User Experience</h4>
-    <p>Both PageSpeed Insights and Lighthouse confirm a <strong>Cumulative Layout Shift of 0</strong> on desktop. CLS is a Core Web Vital that directly influences Google rankings. A score of 0 means no elements on the page shift unexpectedly after load — users see a stable, professional interface. This is a ranking advantage that many competitors have not achieved.</p>
-  </div>
-
-  <!-- ─────────────────────────────────────────── -->
-  <!-- S4: Technical Audit Summary                 -->
-  <!-- ─────────────────────────────────────────── -->
   <a name="s4"></a>
-  <h2 class="section-title">1.4 — Technical Audit Summary (Lighthouse &amp; PageSpeed)</h2>
-
-  <h3 class="sub-title">Score Comparison: Desktop vs Mobile</h3>
-
-  <div style="margin:20px 0;">
-    <p style="font-family:'JetBrains Mono',monospace;font-size:8pt;color:var(--ink-muted);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:12px;">Lighthouse (Direct) Scores — animaat.com</p>
-    <div class="scores-grid">
-      <div class="score-card desktop">
-        <div class="score-device">Desktop</div>
-        <div class="score-ring orange">59</div>
-        <div class="score-name">Performance</div>
-      </div>
-      <div class="score-card desktop">
-        <div class="score-device">Desktop</div>
-        <div class="score-ring green">91</div>
-        <div class="score-name">Accessibility</div>
-      </div>
-      <div class="score-card desktop">
-        <div class="score-device">Desktop</div>
-        <div class="score-ring orange">73</div>
-        <div class="score-name">Best Practices</div>
-      </div>
-      <div class="score-card desktop">
-        <div class="score-device">Desktop</div>
-        <div class="score-ring full">100</div>
-        <div class="score-name">SEO</div>
-      </div>
-    </div>
-    <div class="scores-grid" style="margin-top:12px;">
-      <div class="score-card mobile">
-        <div class="score-device">Mobile (Redirect)</div>
-        <div class="score-ring red">36</div>
-        <div class="score-name">Performance</div>
-      </div>
-      <div class="score-card mobile">
-        <div class="score-device">Mobile (Redirect)</div>
-        <div class="score-ring full">99</div>
-        <div class="score-name">Accessibility</div>
-      </div>
-      <div class="score-card mobile">
-        <div class="score-device">Mobile (Redirect)</div>
-        <div class="score-ring red">54</div>
-        <div class="score-name">Best Practices</div>
-      </div>
-      <div class="score-card mobile">
-        <div class="score-device">Mobile (Redirect)</div>
-        <div class="score-ring green">92</div>
-        <div class="score-name">SEO</div>
-      </div>
-    </div>
-  </div>
-
-  <div style="margin:20px 0;">
-    <p style="font-family:'JetBrains Mono',monospace;font-size:8pt;color:var(--ink-muted);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:12px;">PageSpeed Insights (Google Production) Scores</p>
-    <div class="scores-grid">
-      <div class="score-card desktop">
-        <div class="score-device">Desktop</div>
-        <div class="score-ring orange">75</div>
-        <div class="score-name">Performance</div>
-      </div>
-      <div class="score-card desktop">
-        <div class="score-device">Desktop</div>
-        <div class="score-ring green">91</div>
-        <div class="score-name">Accessibility</div>
-      </div>
-      <div class="score-card desktop">
-        <div class="score-device">Desktop</div>
-        <div class="score-ring full">96</div>
-        <div class="score-name">Best Practices</div>
-      </div>
-      <div class="score-card desktop">
-        <div class="score-device">Desktop</div>
-        <div class="score-ring full">100</div>
-        <div class="score-name">SEO</div>
-      </div>
-    </div>
-    <div class="scores-grid" style="margin-top:12px;">
-      <div class="score-card mobile">
-        <div class="score-device">Mobile</div>
-        <div class="score-ring red">40</div>
-        <div class="score-name">Performance</div>
-      </div>
-      <div class="score-card mobile">
-        <div class="score-device">Mobile</div>
-        <div class="score-ring full">99</div>
-        <div class="score-name">Accessibility</div>
-      </div>
-      <div class="score-card mobile">
-        <div class="score-device">Mobile</div>
-        <div class="score-ring red">54</div>
-        <div class="score-name">Best Practices</div>
-      </div>
-      <div class="score-card mobile">
-        <div class="score-device">Mobile</div>
-        <div class="score-ring green">85</div>
-        <div class="score-name">SEO</div>
-      </div>
-    </div>
-  </div>
+  <h2 class="section-title">1.4 — Technical Audit Summary</h2>
 
   <h3 class="sub-title">Core Web Vitals Summary</h3>
-
-  <table>
-    <thead>
-      <tr><th>Metric</th><th>Desktop (PSI)</th><th>Mobile (PSI)</th><th>Target</th><th>Status</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>First Contentful Paint (FCP)</td><td>1.5s</td><td>12.5s</td><td>&lt;1.8s</td><td><span class="badge badge-green">Desktop ✓</span> <span class="badge badge-red">Mobile ✗</span></td></tr>
-      <tr><td>Largest Contentful Paint (LCP)</td><td>2.5s</td><td>23.5s</td><td>&lt;2.5s</td><td><span class="badge badge-green">Desktop ✓</span> <span class="badge badge-red">Mobile ✗</span></td></tr>
-      <tr><td>Total Blocking Time (TBT)</td><td>160ms</td><td>610ms</td><td>&lt;200ms</td><td><span class="badge badge-green">Desktop ✓</span> <span class="badge badge-red">Mobile ✗</span></td></tr>
-      <tr><td>Cumulative Layout Shift (CLS)</td><td>0</td><td>0.007</td><td>&lt;0.1</td><td><span class="badge badge-green">Both ✓</span></td></tr>
-      <tr><td>Speed Index</td><td>2.0s</td><td>12.5s</td><td>&lt;3.4s</td><td><span class="badge badge-green">Desktop ✓</span> <span class="badge badge-red">Mobile ✗</span></td></tr>
-    </tbody>
-  </table>
-
-  <div class="callout">
-    <strong>Note on Mobile Scores:</strong> The Lighthouse mobile test for animaat.com was redirected to the Google Play Store page. This is a critical configuration error (addressed in Part 2, Issue #01) that artificially deflates mobile scores. The PageSpeed mobile score of 40/100 tests the actual site but is still affected by the redirect chain.
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr><th>Metric</th><th>Desktop (PSI)</th><th>Mobile (PSI)</th><th>Target</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>First Contentful Paint (FCP)</td><td>1.5s</td><td>12.5s</td><td>&lt;1.8s</td><td><span class="badge badge-green">Desktop ✓</span> <span class="badge badge-red">Mobile ✗</span></td></tr>
+        <tr><td>Largest Contentful Paint (LCP)</td><td>2.5s</td><td>23.5s</td><td>&lt;2.5s</td><td><span class="badge badge-green">Desktop ✓</span> <span class="badge badge-red">Mobile ✗</span></td></tr>
+        <tr><td>Total Blocking Time (TBT)</td><td>160ms</td><td>610ms</td><td>&lt;200ms</td><td><span class="badge badge-green">Desktop ✓</span> <span class="badge badge-red">Mobile ✗</span></td></tr>
+        <tr><td>Cumulative Layout Shift (CLS)</td><td>0</td><td>0.007</td><td>&lt;0.1</td><td><span class="badge badge-green">Both ✓</span></td></tr>
+        <tr><td>Speed Index</td><td>2.0s</td><td>12.5s</td><td>&lt;3.4s</td><td><span class="badge badge-green">Desktop ✓</span> <span class="badge badge-red">Mobile ✗</span></td></tr>
+      </tbody>
+    </table>
   </div>
 
-  <!-- ─────────────────────────────────────────── -->
-  <!-- S5: User Behaviour                          -->
-  <!-- ─────────────────────────────────────────── -->
   <a name="s5"></a>
   <h2 class="section-title">1.5 — User Behaviour &amp; Clarity Insights</h2>
-
-  <div class="two-col">
-    <div>
-      <h3 class="sub-title">Session Overview (Jan–May 2026)</h3>
-      <ul class="data-list">
-        <li><strong>871 sessions</strong> tracked (1,056 bot sessions excluded correctly)</li>
-        <li><strong>753 unique users</strong></li>
-        <li><strong>88.17%</strong> new users (768 sessions) — strong new-audience reach</li>
-        <li><strong>11.83%</strong> returning users (103 sessions)</li>
-        <li><strong>1.35</strong> pages per session — shallow exploration</li>
-        <li><strong>15 seconds</strong> active time spent (1.3 min total time)</li>
-        <li><strong>44.51%</strong> average scroll depth</li>
-      </ul>
-    </div>
-    <div>
-      <h3 class="sub-title">Engagement Quality</h3>
-      <ul class="data-list">
-        <li><strong>0%</strong> rage clicks (excellent)</li>
-        <li><strong>0%</strong> excessive scrolling (excellent)</li>
-        <li><strong>4.13%</strong> dead clicks — 36 sessions with non-functional click targets</li>
-        <li><strong>2.30%</strong> quick backs — 20 sessions leaving immediately</li>
-        <li><strong>78/100</strong> Clarity performance score</li>
-        <li><strong>4.7s</strong> LCP measured by real users (poor threshold)</li>
-      </ul>
-    </div>
-  </div>
-
+  
   <h3 class="sub-title">Traffic Sources (Referral Analysis)</h3>
-
-  <table>
-    <thead>
-      <tr><th>Source</th><th>Sessions</th><th>Signal</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Instagram.com</td><td><strong>63</strong></td><td><span class="badge badge-green">Top Referrer — Social Working</span></td></tr>
-      <tr><td>www.animaat.com (self)</td><td>72</td><td>Internal navigation / re-entries</td></tr>
-      <tr><td>google.com</td><td>27</td><td>Organic search traffic</td></tr>
-      <tr><td>m.motoerlyga.lt</td><td>12</td><td>External link / partnership</td></tr>
-      <tr><td>motoerlyga.lt</td><td>11</td><td>External link / partnership</td></tr>
-      <tr><td>com.google.android.googlequicksearchbox</td><td>4</td><td>Android Google App searches</td></tr>
-      <tr><td>LinkedIn</td><td>4</td><td>Professional network</td></tr>
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr><th>Source</th><th>Sessions</th><th>Signal</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Instagram.com</td><td><strong>63</strong></td><td><span class="badge badge-green">Top Referrer</span></td></tr>
+        <tr><td>www.animaat.com (self)</td><td>72</td><td>Internal navigation</td></tr>
+        <tr><td>google.com</td><td>27</td><td>Organic search traffic</td></tr>
+      </tbody>
+    </table>
+  </div>
 
   <h3 class="sub-title">Top Pages by Clarity Traffic</h3>
-
-  <table>
-    <thead>
-      <tr><th>Page</th><th>Sessions</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>https://www.animaat.com/ (Homepage)</td><td><strong>377</strong></td></tr>
-      <tr><td>https://www.animaat.com/community-guidelines/</td><td>72</td></tr>
-      <tr><td>https://www.animaat.com/privacy-policy/</td><td>49</td></tr>
-      <tr><td>User profile pages (multiple)</td><td>~49+</td></tr>
-      <tr><td>https://www.animaat.com/terms-of-use/</td><td>20</td></tr>
-    </tbody>
-  </table>
-
-  <h3 class="sub-title">Browser &amp; Device Distribution</h3>
-
-  <table>
-    <thead>
-      <tr><th>Browser</th><th>Sessions</th><th>Share</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Chrome</td><td>318</td><td>36.51%</td></tr>
-      <tr><td>MobileSafari</td><td>233</td><td>26.75%</td></tr>
-      <tr><td>ChromeMobile</td><td>140</td><td>16.07%</td></tr>
-      <tr><td>InstagramApp</td><td>100</td><td>11.48%</td></tr>
-      <tr><td>SamsungInternet</td><td>22</td><td>2.53%</td></tr>
-    </tbody>
-  </table>
-
-  <div class="callout">
-    <strong>Critical Observation:</strong> <strong>11.48% of all sessions (100 sessions)</strong> come directly from within the Instagram in-app browser. Combined with Instagram being the top referral domain, this confirms Animaat's primary social acquisition channel is Instagram. These users have a different UX expectation (mobile-first, fast, visual) — and mobile performance must be prioritised accordingly.
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr><th>Page</th><th>Sessions</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>https://www.animaat.com/ (Homepage)</td><td><strong>377</strong></td></tr>
+        <tr><td>https://www.animaat.com/community-guidelines/</td><td>72</td></tr>
+        <tr><td>https://www.animaat.com/privacy-policy/</td><td>49</td></tr>
+      </tbody>
+    </table>
   </div>
 
+  <h3 class="sub-title">Browser &amp; Device Distribution</h3>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr><th>Browser</th><th>Sessions</th><th>Share</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Chrome</td><td>318</td><td>36.51%</td></tr>
+        <tr><td>MobileSafari</td><td>233</td><td>26.75%</td></tr>
+        <tr><td>ChromeMobile</td><td>140</td><td>16.07%</td></tr>
+        <tr><td>InstagramApp</td><td>100</td><td>11.48%</td></tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ -->
-<!-- PART 2 HEADER                                          -->
-<!-- ═══════════════════════════════════════════════════════ -->
 <div class="section-break">
-  <div class="part-header">
+  <div class="part-header" id="part2">
     <div class="part-num">Part Two</div>
     <h2>Issues Identification &amp;<br>Actionable Solutions</h2>
     <p>Every identified problem is documented with priority classification, root cause analysis, and concrete, immediately implementable technical solutions.</p>
@@ -1154,241 +1019,60 @@
 </div>
 
 <div class="doc">
-
-  <!-- ISSUE 01 -->
   <a name="i1"></a>
   <div class="issue-box">
     <div class="issue-label">Issue 01 — <span class="priority priority-critical">Critical Priority</span></div>
     <h4>🔴 Critical Mobile Redirect: animaat.com → Google Play Store</h4>
-    <p>The Lighthouse mobile audit revealed that accessing <code>https://www.animaat.com/</code> on mobile triggers a redirect to <code>https://play.google.com/store/apps/details?id=com.animaat.app&pli=1</code>. This is a catastrophic configuration issue: Google's mobile crawler (Googlebot-Smartphone) follows this redirect and indexes the <em>Play Store page</em> instead of animaat.com. This is confirmed by the mobile PageSpeed SEO flag: <strong>"Document does not have a valid rel=canonical — Points to another hreflang location (Play Store)"</strong> and the mobile SEO score dropping to 85/100.</p>
-    <ul class="data-list" style="margin-top:10px;">
-      <li><strong>Impact:</strong> Mobile Lighthouse score penalised (Performance 36/100 vs actual site's 40/100)</li>
-      <li><strong>Impact:</strong> Google may be indexing the Play Store page as Animaat's mobile URL — catastrophic for mobile rankings</li>
-      <li><strong>Impact:</strong> Users on mobile may be redirected away from the website, losing all mobile web traffic</li>
-      <li><strong>Impact:</strong> The hreflang tag pointing to Play Store is invalid and confuses Google's language/region signals</li>
-    </ul>
+    <p>Accessing <code>https://www.animaat.com/</code> on mobile triggers a redirect to the Play Store. Google's mobile crawler indexes the <em>Play Store page</em> instead of animaat.com.</p>
     <div class="solution-box">
       <div class="sol-label">✓ Solution</div>
-      <p><strong>1. Remove or fix the mobile redirect immediately.</strong> Check the .htaccess file, server-side code (PHP/Node), or WordPress/plugin settings for any User-Agent-based redirect targeting mobile browsers. The redirect logic sending mobile visitors to the Play Store must be removed or converted to a <em>smart banner</em> (Google-supported app install prompt).</p>
-      <p><strong>2. Implement a Smart App Banner instead:</strong> Add the following to the <code>&lt;head&gt;</code> of your pages:</p>
-      <pre style="background:var(--bg-warm);padding:10px;border-radius:4px;font-size:9pt;overflow-x:auto;margin:8px 0;"><code>&lt;meta name="apple-itunes-app" content="app-id=YOUR_APP_ID"&gt;
-&lt;link rel="manifest" href="/manifest.json"&gt;</code></pre>
-      <p><strong>3. Fix or remove the hreflang tag</strong> pointing to the Play Store — hreflang must reference actual web pages, not app store URLs.</p>
-      <p><strong>4. After fixing:</strong> Run Google Search Console's URL Inspection tool on the homepage, request re-indexing, and monitor the mobile coverage report for 2–4 weeks.</p>
+      <p><strong>1. Remove or fix the mobile redirect immediately.</strong> Check the .htaccess file or WordPress plugins for User-Agent-based redirects.</p>
+      <p><strong>2. Implement a Smart App Banner instead.</strong></p>
     </div>
   </div>
 
-  <!-- ISSUE 02 -->
   <a name="i2"></a>
   <div class="issue-box">
     <div class="issue-label">Issue 02 — <span class="priority priority-critical">Critical Priority</span></div>
-    <h4>🔴 Mobile Performance Score 40/100 — Core Web Vitals Failing</h4>
-    <p>PageSpeed Insights records mobile FCP at <strong>12.5s</strong>, LCP at <strong>23.5s</strong>, TBT at <strong>610ms</strong>, and Speed Index at <strong>12.5s</strong> — all catastrophically beyond acceptable thresholds. Since Google uses mobile-first indexing, these scores directly suppress Animaat's search rankings across all devices. The primary culprits identified by both tools are:</p>
-    <ul class="data-list" style="margin-top:10px;">
-      <li><strong>Unused JavaScript:</strong> 1,121 KiB (PageSpeed mobile) — loading JS that is never executed on the current page</li>
-      <li><strong>Render-blocking requests:</strong> Est. 2,450ms wasted (Lighthouse desktop) — resources blocking first paint</li>
-      <li><strong>Document request latency:</strong> Est. 1,970ms overhead before page data begins transferring</li>
-      <li><strong>Font display issues:</strong> Est. 1,730ms delay from fonts not loading optimally</li>
-      <li><strong>Network payload too large:</strong> Total mobile payload = 4,814 KiB (well above 1,600 KiB recommended)</li>
-      <li><strong>No HTTP/2 or HTTP/3:</strong> Modern HTTP upgrade could save est. 1,720ms</li>
-    </ul>
-    <div class="solution-box">
-      <div class="sol-label">✓ Solution — Prioritised Action List</div>
-      <p><strong>1. Implement Code Splitting &amp; Lazy Loading:</strong> Use dynamic <code>import()</code> in JavaScript to load only code needed for the current view. Add <code>loading="lazy"</code> to all below-fold images.</p>
-      <p><strong>2. Fix Font Display:</strong> Add <code>font-display: swap</code> to all @font-face declarations to prevent render-blocking while custom fonts load.</p>
-      <p><strong>3. Eliminate Render-Blocking Resources:</strong> Move non-critical CSS to async load. Add <code>defer</code> or <code>async</code> attributes to non-critical script tags.</p>
-      <p><strong>4. Enable HTTP/2 on the server</strong> — contact your hosting provider. HTTP/2 allows multiplexing of requests, eliminating round-trip delays between resource requests.</p>
-      <p><strong>5. Implement proper caching headers:</strong> Add <code>Cache-Control: max-age=31536000, immutable</code> for static assets (JS, CSS, images). Lighthouse flagged est. 4,048 KiB that could be cached but isn't.</p>
-      <p><strong>6. Compress and serve modern image formats:</strong> Convert all images to WebP/AVIF. The image delivery improvement alone could save 866 KiB per page load.</p>
-      <p><strong>7. Reduce unused CSS:</strong> 747 KiB of CSS is loaded but unused. Use PurgeCSS or manual audit to remove dead styles. For WordPress, dequeue unused plugin stylesheets.</p>
-    </div>
-  </div>
-
-  <!-- ISSUE 03 -->
-  <a name="i3"></a>
-  <div class="issue-box">
-    <div class="issue-label">Issue 03 — <span class="priority priority-high">High Priority</span></div>
-    <h4>🟠 Desktop Performance 59–75/100 — Significant Optimisation Headroom</h4>
-    <p>While desktop performance is better than mobile, the Lighthouse score of 59/100 and PageSpeed score of 75/100 show substantial gaps. Desktop LCP is 2.5s (at the very edge of "Good") and FCP is 1.5s (acceptable but improvable). Additional flags include: render-blocking requests (est. 2,450ms savings), legacy JavaScript (est. 157 KiB unnecessary polyfills), unused CSS (747 KiB), and an oversized network payload (3,908 KiB via Lighthouse / 4,715 KiB via PSI).</p>
+    <h4>🔴 Mobile Performance Score 40/100</h4>
+    <p>PageSpeed mobile FCP at <strong>12.5s</strong>, LCP at <strong>23.5s</strong>, due to unused JS (1,121 KiB) and render-blocking requests.</p>
     <div class="solution-box">
       <div class="sol-label">✓ Solution</div>
-      <p><strong>1. Audit and remove Legacy JavaScript:</strong> Use Babel preset-env with targeted browserslist config. Modern browsers (Chrome 90+, Safari 14+) do not need many polyfills. Removing legacy JS saves 157 KiB immediately.</p>
-      <p><strong>2. Preload the LCP element:</strong> Identify the Largest Contentful Paint element (usually the hero image or main heading) and add <code>&lt;link rel="preload"&gt;</code> in the document head to begin loading it immediately.</p>
-      <p><strong>3. Implement resource hints:</strong> Use <code>rel="preconnect"</code> for all critical third-party origins (CDNs, font providers, analytics) to reduce TCP handshake latency.</p>
-      <p><strong>4. Add source maps for JavaScript:</strong> PageSpeed flags "Missing source maps for large first-party JavaScript" — add source maps to improve debugging and reduce console errors.</p>
+      <p><strong>1. Implement Code Splitting &amp; Lazy Loading.</strong></p>
+      <p><strong>2. Enable HTTP/2 and modern image formats (WebP).</strong></p>
     </div>
   </div>
 
-  <!-- ISSUE 04 -->
-  <a name="i4"></a>
-  <div class="issue-box">
-    <div class="issue-label">Issue 04 — <span class="priority priority-high">High Priority</span></div>
-    <h4>🟠 Low Overall CTR (1.72%) — 8,080 Impressions Converting Poorly to Clicks</h4>
-    <p>Animaat generates significant impressions but only converts 1.72% to clicks overall. The US market — Animaat's largest by impressions (3,487) — achieves only 0.40% CTR at position 15.19. High-impression pages like <code>/rescue-dog-nutrition-guide/</code> (1,370 impressions, 0.29% CTR) and <code>/rescue-cat-indoor-transition-guide/</code> (500 impressions, 0.20% CTR) are failing to attract clicks despite substantial search visibility.</p>
-    <div class="solution-box">
-      <div class="sol-label">✓ Solution</div>
-      <p><strong>1. Rewrite meta titles and descriptions for high-impression, low-CTR pages.</strong> Focus on emotional triggers, specificity, and search intent matching. Example: instead of "Rescue Dog Nutrition Guide | Animaat", use "How to Safely Refeed a Starving Dog: The Complete Recovery Protocol."</p>
-      <p><strong>2. Add structured data (FAQ Schema, HowTo Schema, Article Schema)</strong> to content pages. Rich results take more SERP real estate and dramatically increase CTR. Animaat's FAQ pages are natural candidates.</p>
-      <p><strong>3. Target "position 11–20" pages for ranking improvements.</strong> Pages at positions 11–20 are near page 1 with small improvements needed. The rescue cat page (position 9.91), rodent transport page (8.17), and sanctuary space page (7.23) are all close to page 1 territory.</p>
-      <p><strong>4. A/B test meta descriptions</strong> using the GSC performance data as baseline. Track CTR changes after each revision.</p>
-    </div>
-  </div>
-
-  <!-- ISSUE 05 -->
-  <a name="i5"></a>
-  <div class="issue-box">
-    <div class="issue-label">Issue 05 — <span class="priority priority-critical">Critical Priority</span></div>
-    <h4>🔴 Impression Collapse: January Peak (1,712) → April Drop (254) → May Near-Zero</h4>
-    <p>After reaching a peak of 1,712 impressions in January 2026, impressions have declined sharply — dropping to 963 in March, 254 in April, and near-zero in May 2026 (only 42 impressions, likely incomplete data). This dramatic decline suggests either: (a) a Google algorithm update affected ranking positions, (b) content became less relevant or was thin/duplicate, (c) technical issues caused indexation drops, or (d) the redirect issue (Issue #01) is causing Google to stop crawling the site entirely on mobile.</p>
-    <div class="solution-box">
-      <div class="sol-label">✓ Solution</div>
-      <p><strong>1. Conduct an immediate Google Search Console Coverage audit.</strong> Check for "Excluded" pages, crawl errors, or noindex tags added inadvertently.</p>
-      <p><strong>2. Correlate the decline with Google algorithm update dates.</strong> Major updates in early 2026 (Core Update, Spam Update) may have affected rankings. Review Google Search Status Dashboard for update dates.</p>
-      <p><strong>3. Fix the mobile redirect (Issue #01) immediately</strong> — this is the most likely cause of Google reducing crawl activity, as a site that redirects mobile Googlebot to the Play Store signals misconfiguration.</p>
-      <p><strong>4. Conduct a content quality audit.</strong> Identify thin pages (under 500 words), duplicate content, or pages with high impressions but no meaningful content improvement since publication.</p>
-      <p><strong>5. Increase publishing frequency of new content</strong> on established topics where Animaat already ranks (rescue dog care, rabbit care, bird enrichment) to signal freshness to Google.</p>
-    </div>
-  </div>
-
-  <!-- ISSUE 06 -->
-  <a name="i6"></a>
-  <div class="issue-box">
-    <div class="issue-label">Issue 06 — <span class="priority priority-high">High Priority</span></div>
-    <h4>🟠 Best Practices Score 54/100 (Mobile) — Security &amp; Trust Deficits</h4>
-    <p>Both Lighthouse and PageSpeed flag the following Best Practices failures: (a) <strong>Does not use HTTPS for all requests</strong> — 1–2 insecure HTTP requests found within the page; (b) <strong>Uses third-party cookies</strong> — 5 cookies flagged; (c) <strong>Browser errors logged to console</strong>; (d) <strong>Issues logged in Chrome DevTools Issues panel</strong>; (e) <strong>No strong HSTS policy</strong>.</p>
-    <div class="solution-box">
-      <div class="sol-label">✓ Solution</div>
-      <p><strong>1. Fix mixed content (insecure HTTP requests):</strong> Open Chrome DevTools → Security tab and identify which resources load over HTTP. Update all asset URLs to use HTTPS. This is usually caused by hardcoded HTTP URLs in the database (common in WordPress after SSL migration).</p>
-      <p><strong>2. Implement HSTS (HTTP Strict Transport Security):</strong> Add the following header at the server/nginx level:</p>
-      <pre style="background:var(--bg-warm);padding:10px;border-radius:4px;font-size:9pt;margin:8px 0;"><code>Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</code></pre>
-      <p><strong>3. Audit and minimise third-party cookies.</strong> Review all installed plugins, scripts, and third-party services. Remove or replace any using deprecated or tracking cookies that conflict with privacy standards.</p>
-      <p><strong>4. Resolve all browser console errors</strong> — see Issue #08 for detailed JS error resolution.</p>
-    </div>
-  </div>
-
-  <!-- ISSUE 07 -->
-  <a name="i7"></a>
-  <div class="issue-box">
-    <div class="issue-label">Issue 07 — <span class="priority priority-high">High Priority</span></div>
-    <h4>🟠 Low Engagement Depth: 1.35 Pages/Session, 15s Active Time, 44.5% Scroll Depth</h4>
-    <p>Clarity data reveals that despite acquiring 871 sessions, users explore very little of the site: 1.35 pages per session (nearly single-page visits for most users), only 15 seconds of active interaction time, and a 44.5% scroll depth indicating most users never reach the bottom half of any page. The 2.3% quick-backs (20 sessions) suggest search intent mismatch — users arrive and immediately leave.</p>
-    <div class="solution-box">
-      <div class="sol-label">✓ Solution</div>
-      <p><strong>1. Add prominent internal linking.</strong> Every blog/article page should include 3–5 contextual links to related content. Use "Related Articles" or "You May Also Like" sections above the fold.</p>
-      <p><strong>2. Improve above-the-fold content quality.</strong> The 44.5% scroll depth and 15s active time indicate users make decisions in the first screen. Ensure the value proposition, key content, and CTAs are visible without scrolling.</p>
-      <p><strong>3. Add interactive elements</strong> that drive engagement: comment sections, pet profile creation prompts, quizzes (e.g. "What's your pet's care style?"), or community joining CTAs. These extend session duration measurably.</p>
-      <p><strong>4. Implement exit-intent content suggestions.</strong> When a user is about to leave an article, show a relevant content recommendation to keep them on site.</p>
-      <p><strong>5. Review quick-back sources</strong> in Clarity recordings to identify which pages are producing rapid exits and why (content mismatch, load failure, or poor mobile UX).</p>
-    </div>
-  </div>
-
-  <!-- ISSUE 08 -->
-  <a name="i8"></a>
-  <div class="issue-box">
-    <div class="issue-label">Issue 08 — <span class="priority priority-high">High Priority</span></div>
-    <h4>🟠 JavaScript Errors (9 Total) &amp; Dead Clicks (4.13%)</h4>
-    <p>Clarity detected <strong>9 total JavaScript errors</strong> across sessions: 44.44% are "is not defined" errors, 11.11% each are "is not a function," "illegal invocation," and "return statements are only valid inside functions." Additionally, <strong>4.13% of sessions (36 sessions)</strong> recorded dead clicks — users clicking on elements that do not respond. These errors directly degrade user experience and indicate code quality issues.</p>
-    <div class="solution-box">
-      <div class="sol-label">✓ Solution</div>
-      <p><strong>1. Address "is not defined" errors (highest frequency):</strong> These typically indicate variables or functions being called before they are declared, or dependencies loaded out of order. Use browser DevTools (Console tab) to identify exact line numbers and script files. Ensure all dependencies load before the scripts that depend on them.</p>
-      <p><strong>2. Fix dead clicks using Clarity Heatmaps.</strong> Open Clarity → Heatmaps → Dead Clicks to see exactly which page elements are receiving clicks but not responding. Common causes: CSS elements styled as buttons without click handlers, broken links (href="#"), or elements covered by invisible overlays.</p>
-      <p><strong>3. Implement error monitoring.</strong> Integrate a tool like Sentry or LogRocket to capture all JavaScript errors in production with full stack traces. This transforms reactive debugging into proactive monitoring.</p>
-      <p><strong>4. Run a systematic code audit</strong> for all inline event handlers and ensure no function references exist to undefined callbacks.</p>
-    </div>
-  </div>
-
-  <!-- ISSUE 09 -->
-  <a name="i9"></a>
-  <div class="issue-box">
-    <div class="issue-label">Issue 09 — <span class="priority priority-medium">Medium Priority</span></div>
-    <h4>🔵 SEO Content Gaps: High-Impression Keywords Converting 0 Clicks</h4>
-    <p>Several high-impression queries are generating zero clicks, representing significant unrealised traffic potential. Queries such as <em>"best rabbit habitat settings for optimal comfort"</em> (127 impressions, pos. 42), <em>"domestic bird care"</em> (110 impressions, pos. 50), and <em>"how to feed an emaciated dog"</em> (76 impressions, pos. 37) confirm Google recognises Animaat's topical relevance but the content is ranked too deep to attract clicks. Additionally, Lighthouse flags <strong>4 links without descriptive text</strong> across both desktop and mobile, which is an SEO content quality signal.</p>
-    <div class="solution-box">
-      <div class="sol-label">✓ Solution</div>
-      <p><strong>1. Create or optimise dedicated landing pages</strong> for the top zero-click queries. For "domestic bird care" (pos. 50 with 110 impressions), publish a comprehensive, structured guide with H2 headings matching sub-queries, FAQ sections, and rich media. Target position 10 and below.</p>
-      <p><strong>2. Fix non-descriptive link text.</strong> Audit all <code>&lt;a&gt;</code> tags and replace generic text like "click here," "read more," or icon-only links with descriptive text that tells users and Google what the destination page contains.</p>
-      <p><strong>3. Build topic clusters.</strong> Group related content (e.g. all rabbit care articles) under a single pillar page that links to all sub-articles. This strengthens topical authority and can lift entire clusters in rankings simultaneously.</p>
-      <p><strong>4. Pursue featured snippet optimisation</strong> for question-based queries (who, what, how, why). Format answers with concise 40–60 word paragraphs directly answering the query, preceded by the query as an H2 or H3 heading.</p>
-    </div>
-  </div>
-
-  <!-- ISSUE 10 -->
-  <a name="i10"></a>
-  <div class="issue-box">
-    <div class="issue-label">Issue 10 — <span class="priority priority-critical">Critical Priority</span></div>
-    <h4>🔴 Invalid rel=canonical &amp; hreflang Conflict on Mobile</h4>
-    <p>PageSpeed Insights mobile reports: <em>"Document does not have a valid rel=canonical — Points to another hreflang location (https://play.google.com/store/apps/details?id=com.animaat.app)"</em>. This means the canonical tag on the mobile version of the homepage is pointing to the Play Store — telling Google that the <em>canonical</em> (authoritative) version of animaat.com is a Play Store listing. This is a critical SEO signal error that can cause Google to deindex or demote the actual website.</p>
-    <div class="solution-box">
-      <div class="sol-label">✓ Solution</div>
-      <p><strong>1. Immediately audit the rel=canonical tag</strong> on all pages, especially the homepage. The canonical should always point to the page itself (self-referencing canonical) or to the desktop equivalent URL — never to an app store.</p>
-      <p><strong>2. Remove or fix any hreflang tags</strong> pointing to app store URLs. Valid hreflang must reference web URLs only. If you need to indicate an app, use platform-specific meta tags (apple-itunes-app, google-play-app) rather than hreflang.</p>
-      <p><strong>3. Use GSC's URL Inspection tool</strong> to verify what Google sees as the canonical URL for your homepage. If it returns the Play Store URL, submit for re-indexing immediately after fixing.</p>
-      <p><strong>4. Check for conditional canonical implementation</strong> in WordPress plugins (Yoast, RankMath) or theme templates. Some plugins conditionally output different canonicals for mobile user agents.</p>
-    </div>
-  </div>
-
-  <hr class="divider">
-
-  <!-- PRIORITY SUMMARY TABLE -->
   <h2 class="section-title">Summary: Issue Priority Matrix</h2>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr><th>Issue</th><th>Priority</th><th>Est. Impact</th><th>Implementation Effort</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01 — Mobile Redirect to Play Store</td><td><span class="priority priority-critical">Critical</span></td><td>Very High</td><td>Low (server config fix)</td></tr>
+        <tr><td>10 — Invalid canonical/hreflang</td><td><span class="priority priority-critical">Critical</span></td><td>Very High</td><td>Low (tag fix)</td></tr>
+        <tr><td>05 — Impression Collapse</td><td><span class="priority priority-critical">Critical</span></td><td>Very High</td><td>Medium (audit + content)</td></tr>
+      </tbody>
+    </table>
+  </div>
 
-  <table>
-    <thead>
-      <tr><th>Issue</th><th>Priority</th><th>Est. Impact</th><th>Implementation Effort</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>01 — Mobile Redirect to Play Store</td><td><span class="priority priority-critical">Critical</span></td><td>Very High — Indexation Risk</td><td>Low (server config fix)</td></tr>
-      <tr><td>10 — Invalid canonical/hreflang</td><td><span class="priority priority-critical">Critical</span></td><td>Very High — Ranking Risk</td><td>Low (tag fix)</td></tr>
-      <tr><td>05 — Impression Collapse</td><td><span class="priority priority-critical">Critical</span></td><td>Very High — Traffic Recovery</td><td>Medium (audit + content)</td></tr>
-      <tr><td>02 — Mobile Performance (40/100)</td><td><span class="priority priority-critical">Critical</span></td><td>Very High — Rankings &amp; UX</td><td>High (dev work)</td></tr>
-      <tr><td>04 — Low CTR (1.72%)</td><td><span class="priority priority-high">High</span></td><td>High — Direct Traffic</td><td>Low (copy &amp; schema)</td></tr>
-      <tr><td>06 — Best Practices (54/100)</td><td><span class="priority priority-high">High</span></td><td>High — Security &amp; Trust</td><td>Low-Medium</td></tr>
-      <tr><td>08 — JS Errors &amp; Dead Clicks</td><td><span class="priority priority-high">High</span></td><td>Medium — UX Quality</td><td>Medium</td></tr>
-      <tr><td>07 — Low Engagement Depth</td><td><span class="priority priority-high">High</span></td><td>Medium — Retention</td><td>Medium</td></tr>
-      <tr><td>03 — Desktop Performance</td><td><span class="priority priority-high">High</span></td><td>Medium — Ranking boost</td><td>High (dev work)</td></tr>
-      <tr><td>09 — Content &amp; Link Gaps</td><td><span class="priority priority-medium">Medium</span></td><td>Medium — Long-term traffic</td><td>Medium (content writing)</td></tr>
-    </tbody>
-  </table>
-
-  <hr class="divider">
-
-  <!-- FINAL RECOMMENDATIONS -->
   <h2 class="section-title">30-Day Action Roadmap</h2>
-
-  <table>
-    <thead>
-      <tr><th>Week</th><th>Actions</th><th>Owner</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Week 1</td>
-        <td>Fix mobile redirect (Issue #01) · Fix rel=canonical (Issue #10) · Fix mixed content HTTPS (Issue #06) · Request GSC re-indexing</td>
-        <td>Dev / Technical SEO</td>
-      </tr>
-      <tr>
-        <td>Week 2</td>
-        <td>Rewrite meta titles &amp; descriptions for top 10 high-impression, low-CTR pages (Issue #04) · Implement FAQ schema on FAQ pages · Conduct coverage audit (Issue #05)</td>
-        <td>SEO / Content</td>
-      </tr>
-      <tr>
-        <td>Week 3</td>
-        <td>Begin mobile performance optimisation: font-display swap, code splitting, image conversion to WebP, cache headers (Issue #02) · Fix all JS errors (Issue #08)</td>
-        <td>Dev</td>
-      </tr>
-      <tr>
-        <td>Week 4</td>
-        <td>Add internal linking strategy to all blog posts (Issue #07) · Publish 3+ new optimised articles targeting zero-click queries (Issue #09) · Review Clarity heatmaps weekly</td>
-        <td>Content / Dev</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr><th>Week</th><th>Actions</th><th>Owner</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Week 1</td><td>Fix mobile redirect (Issue #01) · Fix rel=canonical (Issue #10)</td><td>Dev / Tech SEO</td></tr>
+        <tr><td>Week 2</td><td>Rewrite meta titles &amp; descriptions (Issue #04)</td><td>SEO / Content</td></tr>
+      </tbody>
+    </table>
+  </div>
 
   <div class="report-footer">
     <p>ANIMAAT.COM — COMPREHENSIVE SEO &amp; PERFORMANCE REPORT | MAY 2026</p>
-    <p style="margin-top:6px;">Data Sources: Google Search Console · Lighthouse 13.0.x · PageSpeed Insights · Microsoft Clarity · Internal Sitemaps</p>
-    <p style="margin-top:6px;font-size:7pt;">Report generated for internal strategic use. All data sourced from publicly available platform audit tools and first-party analytics.</p>
   </div>
-
 </div>
 
 </body>
